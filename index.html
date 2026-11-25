@@ -32,15 +32,35 @@
       font-weight: 500;
       line-height: 1.5;
       padding-bottom: 96px;
+      position: relative;
+      overflow-x: hidden;
     }
 
-    main { max-width: 620px; margin: 0 auto; padding: 0 18px }
+    /* Pipocas caindo no fundo */
+    .pipocas { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden }
+    .pipocas span {
+      position: absolute; top: -40px; font-size: 22px; opacity: 0;
+      animation: cairPipoca linear infinite; user-select: none
+    }
+    @keyframes cairPipoca {
+      0% { transform: translateY(-40px) rotate(0); opacity: 0 }
+      10% { opacity: .9 }
+      90% { opacity: .9 }
+      100% { transform: translateY(108vh) rotate(360deg); opacity: 0 }
+    }
+
+    main { max-width: 620px; margin: 0 auto; padding: 0 18px; position: relative; z-index: 1 }
 
     header { text-align: center; padding: 26px 0 10px }
     .logo { width: 150px; height: 150px; object-fit: cover; border-radius: 50%; margin: 0 auto 8px; display: block; border: 4px solid var(--accent); box-shadow: 0 6px 18px rgba(0,0,0,.18) }
     h1 {
       font-family: 'Pacifico', cursive; font-weight: 400; font-size: 40px; margin: 6px 0 0;
-      color: var(--accent); text-shadow: 1px 1px 0 var(--gold)
+      color: var(--accent); text-shadow: 1px 1px 0 var(--gold);
+      animation: pulsaTitulo 2.6s ease-in-out infinite
+    }
+    @keyframes pulsaTitulo {
+      0%, 100% { transform: scale(1) }
+      50% { transform: scale(1.04) }
     }
     .tag { color: var(--muted); margin: 4px 0 0; font-weight: 700 }
 
@@ -50,10 +70,14 @@
       border-radius: 999px; margin: 16px 0 6px; box-shadow: 0 4px 12px rgba(0,0,0,.2)
     }
 
-    .item { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 16px; margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between; gap: 12px; box-shadow: 0 3px 12px rgba(122,63,23,.08) }
+    .item { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 16px; margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between; gap: 12px; box-shadow: 0 3px 12px rgba(122,63,23,.08); transition: transform .2s ease, box-shadow .2s ease }
+    .item:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(122,63,23,.16) }
     .item .nome-wrap { flex: 1; min-width: 0 }
     .item .nome { font-family: 'Pacifico', cursive; font-size: 22px; color: var(--accent) }
     .item .desc { color: var(--muted); font-size: 13.5px; margin-top: 4px }
+
+    .reveal { opacity: 0; transform: translateY(18px); transition: opacity .55s ease, transform .55s ease }
+    .reveal.show { opacity: 1; transform: none }
 
     .q { display: flex; align-items: center; gap: 8px; flex: none }
     .q button { width: 36px; height: 36px; border-radius: 50%; border: 0; background: var(--line); color: var(--ink); font: 700 20px/1 inherit; cursor: pointer }
@@ -71,7 +95,9 @@
 
     .bar { position: fixed; left: 0; right: 0; bottom: 0; padding: 12px 18px calc(12px + env(safe-area-inset-bottom, 0px)); background: var(--bg); border-top: 1px solid var(--line); display: flex; justify-content: center; z-index: 10 }
     .bar button { width: 100%; max-width: 584px; border: 0; border-radius: 999px; background: var(--accent); color: #fff; font: 700 17px inherit; padding: 14px; cursor: pointer }
-    .bar button:disabled { opacity: .5; cursor: default }
+    .bar button:not(:disabled) { animation: pulsaBtn 2s ease-in-out infinite }
+    .bar button:disabled { opacity: .5; cursor: default; animation: none }
+    @keyframes pulsaBtn { 0%,100% { box-shadow: 0 0 0 0 rgba(122,63,23,.45) } 70% { box-shadow: 0 0 0 12px rgba(122,63,23,0) } }
 
     .overlay { position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 20; opacity: 0; pointer-events: none; transition: opacity .25s }
     .overlay.aberto { opacity: 1; pointer-events: auto }
@@ -91,10 +117,16 @@
     .drawer-dados input { width: 100%; border: 1px solid var(--line); border-radius: 12px; background: var(--card); color: var(--ink); font: 500 15px inherit; padding: 11px }
     .drawer-rodape { padding: 14px 20px calc(16px + env(safe-area-inset-bottom, 0px)); border-top: 1px solid var(--line) }
     .drawer-rodape .btn { width: 100%; border: 0; border-radius: 999px; background: #25d366; color: #fff; font: 700 17px inherit; padding: 14px; cursor: pointer }
+
+    @media (prefers-reduced-motion: reduce) {
+      .pipocas, h1, .bar button { animation: none !important }
+      .reveal { opacity: 1; transform: none }
+    }
   </style>
 </head>
 
 <body>
+  <div class="pipocas" id="pipocas" aria-hidden="true"></div>
   <main>
     <header>
       <!-- Se tiver a logo, suba o arquivo e descomente:
@@ -152,12 +184,28 @@
     var PRECO = 25, PRECO_DESC = 20, MIN_DESC = 4;
     var qty = {};
 
+    // Pipocas no fundo
+    (function () {
+      var box = document.getElementById("pipocas");
+      if (!box) return;
+      var emojis = ["🍿", "🍿", "🍿", "✨"];
+      for (var i = 0; i < 16; i++) {
+        var s = document.createElement("span");
+        s.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+        s.style.left = Math.random() * 100 + "vw";
+        s.style.fontSize = (16 + Math.random() * 16) + "px";
+        s.style.animationDuration = (7 + Math.random() * 8) + "s";
+        s.style.animationDelay = (Math.random() * 8) + "s";
+        box.appendChild(s);
+      }
+    })();
+
     function render(id, list) {
       var box = document.getElementById(id);
       if (!box || !list) return;
       list.forEach(function (it) {
         var n = it[0], sub = it[1] || "";
-        var card = document.createElement("div"); card.className = "item";
+        var card = document.createElement("div"); card.className = "item reveal";
         var wrap = document.createElement("div"); wrap.className = "nome-wrap";
         var s = document.createElement("div"); s.className = "nome"; s.textContent = n;
         wrap.appendChild(s);
@@ -173,6 +221,16 @@
       });
     }
     render("sabores", data.sabores);
+
+    // Revela os cards ao rolar
+    (function () {
+      var els = document.querySelectorAll(".reveal");
+      if (!("IntersectionObserver" in window)) { els.forEach(function (e) { e.classList.add("show"); }); return; }
+      var obs = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add("show"); obs.unobserve(en.target); } });
+      }, { threshold: .1 });
+      els.forEach(function (e) { obs.observe(e); });
+    })();
 
     function totalItens() { var t = 0; for (var k in qty) t += qty[k]; return t; }
     function precoUnit() { return totalItens() > MIN_DESC ? PRECO_DESC : PRECO; }

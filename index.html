@@ -99,6 +99,16 @@
     .precos .valor { color: var(--gold) }
     .precos .entrega { font-size: 13px; color: #f3dcbb; margin-top: 8px }
 
+    .pix { background: var(--card); border: 2px solid var(--gold); border-radius: 18px; padding: 22px 20px; margin-top: 18px; text-align: center }
+    .pix .pix-tit { font-family: 'Pacifico', cursive; font-size: 24px; color: var(--accent); margin: 0 }
+    .pix .pix-sub { color: var(--muted); font-weight: 600; margin: 6px 0 14px; font-size: 14px }
+    .pix .pix-chave { display: flex; align-items: center; justify-content: space-between; gap: 10px; background: #fff; border: 1px dashed var(--accent2); border-radius: 14px; padding: 12px 14px; margin-bottom: 10px }
+    .pix .pix-chave .pix-valor { font-weight: 800; color: var(--accent); word-break: break-all; text-align: left; font-size: 15px }
+    .pix .pix-copiar { flex: none; border: 0; border-radius: 10px; background: var(--accent2); color: #fff; font: 700 13px inherit; padding: 9px 14px; cursor: pointer }
+    .pix .pix-copiar.ok { background: #2e9e4f }
+    .pix .pix-titular { color: var(--ink); font-weight: 700; font-size: 14px; margin: 4px 0 2px }
+    .pix .pix-aviso { color: var(--muted); font-size: 12.5px; margin-top: 8px }
+
     .corp { background: var(--card); border: 2px solid var(--gold); border-radius: 18px; padding: 22px 20px; margin-top: 18px; text-align: center }
     .corp .corp-tit { font-family: 'Pacifico', cursive; font-size: 26px; color: var(--accent); margin: 0 }
     .corp .corp-sub { color: var(--muted); font-weight: 600; margin: 6px 0 14px }
@@ -175,6 +185,17 @@
       <p class="entrega">🛵 Entrega a partir de R$ 10,00 — consulte seu bairro</p>
     </div>
 
+    <div class="pix">
+      <p class="pix-tit">💳 Pagamento via Pix</p>
+      <p class="pix-sub">Faça o pedido, copie a chave e envie o comprovante no WhatsApp 💛</p>
+      <div class="pix-chave">
+        <span class="pix-valor" id="pix-valor">62112108000123</span>
+        <button class="pix-copiar" id="pix-copiar">Copiar</button>
+      </div>
+      <p class="pix-titular">👤 Allana Silva Oliveira</p>
+      <p class="pix-aviso">Após o Pix, mande o comprovante no WhatsApp para confirmarmos seu pedido.</p>
+    </div>
+
     <div class="amor">
       <p class="amor-tit">💕 Explosão do Amor</p>
       <img class="amor-foto" src="Captura%20de%20tela%202026-11-25%20191538.png" alt="Explosão do Amor - pipoca gourmet + buquê" loading="lazy" onclick="abrirImagem('Captura%20de%20tela%202026-11-25%20191538.png')">
@@ -234,6 +255,8 @@
   <script src="menu.js"></script>
   <script>
     var WHATS = "5564993132591";
+    var PIX_CHAVE = "62112108000123";
+    var PIX_TITULAR = "Allana Silva Oliveira";
     var PRECO_250 = 15, PRECO_500 = 28;
     var TAMANHOS = [
       { id: "250g", label: "Pote 250g", preco: PRECO_250 },
@@ -246,6 +269,23 @@
       "https://wa.me/" + WHATS + "?text=" + encodeURIComponent("Olá! Tenho interesse no Kit Corporativo da Doce Explosão 🍿🏢.\n\nKits:\n• 25 unidades — R$ 375,00\n• 50 unidades — R$ 750,00\n• 100 unidades — R$ 1.200,00\n\nGostaria de mais informações!");
     document.getElementById("amor-btn").href =
       "https://wa.me/" + WHATS + "?text=" + encodeURIComponent("Olá! Tenho interesse na Explosão do Amor 💕🍿💐 (pipoca gourmet + buquê) — R$ 179,90. Gostaria de mais informações!");
+
+    (function () {
+      var btn = document.getElementById("pix-copiar");
+      if (!btn) return;
+      btn.onclick = function () {
+        var txt = PIX_CHAVE;
+        function ok() { btn.textContent = "Copiado ✓"; btn.classList.add("ok"); setTimeout(function () { btn.textContent = "Copiar"; btn.classList.remove("ok"); }, 2000); }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(txt).then(ok, function () { fallback(); });
+        } else { fallback(); }
+        function fallback() {
+          var t = document.createElement("textarea"); t.value = txt; document.body.appendChild(t); t.select();
+          try { document.execCommand("copy"); ok(); } catch (e) {}
+          document.body.removeChild(t);
+        }
+      };
+    })();
 
     (function () {
       var box = document.getElementById("pipocas");
@@ -401,6 +441,7 @@
       if (tel) msg += "\nTelefone: " + tel;
       if (end) msg += "\nEndereço: " + end;
       if (obs) msg += "\nObservações: " + obs;
+      msg += "\n\n💳 Pagamento via Pix\nChave: " + PIX_CHAVE + "\nTitular: " + PIX_TITULAR;
       window.open("https://wa.me/" + WHATS + "?text=" + encodeURIComponent(msg), "_blank");
     };
   </script>

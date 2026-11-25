@@ -36,7 +36,6 @@
       overflow-x: hidden;
     }
 
-    /* Pipocas caindo no fundo */
     .pipocas { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden }
     .pipocas span {
       position: absolute; top: -40px; font-size: 22px; opacity: 0;
@@ -51,16 +50,20 @@
 
     main { max-width: 620px; margin: 0 auto; padding: 0 18px; position: relative; z-index: 1 }
 
-    header { text-align: center; padding: 26px 0 10px }
-    .logo { width: 150px; height: 150px; object-fit: cover; border-radius: 50%; margin: 0 auto 8px; display: block; border: 4px solid var(--accent); box-shadow: 0 6px 18px rgba(0,0,0,.18) }
-    h1 {
-      font-family: 'Pacifico', cursive; font-weight: 400; font-size: 40px; margin: 6px 0 0;
-      color: var(--accent); text-shadow: 1px 1px 0 var(--gold);
-      animation: pulsaTitulo 2.6s ease-in-out infinite
+    header { text-align: center; padding: 22px 0 8px }
+    .logo {
+      width: 210px; max-width: 72%; height: auto; object-fit: contain; margin: 0 auto 6px; display: block;
+      filter: drop-shadow(0 6px 16px rgba(0,0,0,.25));
+      animation: logoEntra .9s ease both, logoFlutua 3.6s ease-in-out .9s infinite
     }
-    @keyframes pulsaTitulo {
-      0%, 100% { transform: scale(1) }
-      50% { transform: scale(1.04) }
+    @keyframes logoEntra {
+      0% { opacity: 0; transform: scale(.7) }
+      60% { transform: scale(1.05) }
+      100% { opacity: 1; transform: scale(1) }
+    }
+    @keyframes logoFlutua {
+      0%, 100% { transform: translateY(0) }
+      50% { transform: translateY(-7px) }
     }
     .tag { color: var(--muted); margin: 4px 0 0; font-weight: 700 }
 
@@ -119,7 +122,7 @@
     .drawer-rodape .btn { width: 100%; border: 0; border-radius: 999px; background: #25d366; color: #fff; font: 700 17px inherit; padding: 14px; cursor: pointer }
 
     @media (prefers-reduced-motion: reduce) {
-      .pipocas, h1, .bar button { animation: none !important }
+      .pipocas, .logo, .bar button { animation: none !important }
       .reveal { opacity: 1; transform: none }
     }
   </style>
@@ -129,9 +132,7 @@
   <div class="pipocas" id="pipocas" aria-hidden="true"></div>
   <main>
     <header>
-      <!-- Se tiver a logo, suba o arquivo e descomente:
-      <img class="logo" src="logo.png" alt="Doce Explosão"> -->
-      <h1>Doce Explosão</h1>
+      <img class="logo" src="logo_sem_fundo.png" alt="Doce Explosão">
       <p class="tag">🍿 Pipoca Gourmet • Sabor que explode!</p>
       <div class="cardapio-sel">Cardápio</div>
     </header>
@@ -184,7 +185,6 @@
     var PRECO = 25, PRECO_DESC = 20, MIN_DESC = 4;
     var qty = {};
 
-    // Pipocas no fundo
     (function () {
       var box = document.getElementById("pipocas");
       if (!box) return;
@@ -222,7 +222,6 @@
     }
     render("sabores", data.sabores);
 
-    // Revela os cards ao rolar
     (function () {
       var els = document.querySelectorAll(".reveal");
       if (!("IntersectionObserver" in window)) { els.forEach(function (e) { e.classList.add("show"); }); return; }

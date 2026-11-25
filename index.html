@@ -114,7 +114,8 @@
     .corp .corp-sub { color: var(--muted); font-weight: 600; margin: 6px 0 14px }
     .corp .kits { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px }
     .corp .kit { display: flex; align-items: center; justify-content: space-between; gap: 10px; background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 12px 16px }
-    .corp .kit .kq { font-weight: 700 }
+    .corp .kit .kq { font-weight: 700; text-align: left }
+    .corp .kit .kq small { display: block; font-weight: 600; font-size: 12px; color: var(--muted) }
     .corp .kit .kp { color: var(--accent); font-weight: 800; font-size: 18px }
     .corp .corp-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%; border: 0; border-radius: 999px; background: #25d366; color: #fff; font: 700 16px inherit; padding: 13px; cursor: pointer; text-decoration: none }
 
@@ -206,11 +207,11 @@
 
     <div class="corp">
       <p class="corp-tit">🏢 Kit Corporativo</p>
-      <p class="corp-sub">Pipocas gourmet para a sua empresa!</p>
+      <p class="corp-sub">Pipocas gourmet para a sua empresa! (potes de 250g)</p>
       <div class="kits">
-        <div class="kit"><span class="kq">25 unidades</span><span class="kp">R$ 375,00</span></div>
-        <div class="kit"><span class="kq">50 unidades</span><span class="kp">R$ 750,00</span></div>
-        <div class="kit"><span class="kq">100 unidades</span><span class="kp">R$ 1.200,00</span></div>
+        <div class="kit"><span class="kq">25 unidades <small>potes de 250g</small></span><span class="kp">R$ 375,00</span></div>
+        <div class="kit"><span class="kq">50 unidades <small>potes de 250g</small></span><span class="kp">R$ 750,00</span></div>
+        <div class="kit"><span class="kq">100 unidades <small>potes de 250g</small></span><span class="kp">R$ 1.200,00</span></div>
       </div>
       <a class="corp-btn" id="corp-btn" href="#" target="_blank" rel="noopener">💬 Pedir Kit Corporativo no WhatsApp</a>
     </div>
@@ -266,7 +267,7 @@
     var qty = {};
 
     document.getElementById("corp-btn").href =
-      "https://wa.me/" + WHATS + "?text=" + encodeURIComponent("Olá! Tenho interesse no Kit Corporativo da Doce Explosão 🍿🏢.\n\nKits:\n• 25 unidades — R$ 375,00\n• 50 unidades — R$ 750,00\n• 100 unidades — R$ 1.200,00\n\nGostaria de mais informações!");
+      "https://wa.me/" + WHATS + "?text=" + encodeURIComponent("Olá! Tenho interesse no Kit Corporativo da Doce Explosão 🍿🏢 (potes de 250g).\n\nKits:\n• 25 unidades — R$ 375,00\n• 50 unidades — R$ 750,00\n• 100 unidades — R$ 1.200,00\n\nGostaria de mais informações!");
     document.getElementById("amor-btn").href =
       "https://wa.me/" + WHATS + "?text=" + encodeURIComponent("Olá! Tenho interesse na Explosão do Amor 💕🍿💐 (pipoca gourmet + buquê) — R$ 179,90. Gostaria de mais informações!");
 

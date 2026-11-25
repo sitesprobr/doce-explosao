@@ -50,20 +50,21 @@
 
     main { max-width: 620px; margin: 0 auto; padding: 0 18px; position: relative; z-index: 1 }
 
-    header { text-align: center; padding: 22px 0 8px }
+    header { text-align: center; padding: 34px 0 10px; overflow: visible }
     .logo {
-      width: 210px; max-width: 72%; height: auto; object-fit: contain; margin: 0 auto 6px; display: block;
+      width: 200px; max-width: 68%; height: auto; object-fit: contain; margin: 12px auto 8px; display: block;
       filter: drop-shadow(0 6px 16px rgba(0,0,0,.25));
-      animation: logoEntra .9s ease both, logoFlutua 3.6s ease-in-out .9s infinite
+      animation: logoEntra .9s ease both, logoFlutua 3.6s ease-in-out .9s infinite;
+      will-change: transform;
     }
     @keyframes logoEntra {
-      0% { opacity: 0; transform: scale(.7) }
-      60% { transform: scale(1.05) }
+      0% { opacity: 0; transform: scale(.72) }
+      60% { transform: scale(1.03) }
       100% { opacity: 1; transform: scale(1) }
     }
     @keyframes logoFlutua {
       0%, 100% { transform: translateY(0) }
-      50% { transform: translateY(-7px) }
+      50% { transform: translateY(-6px) }
     }
     .tag { color: var(--muted); margin: 4px 0 0; font-weight: 700 }
 

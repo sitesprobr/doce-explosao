@@ -73,21 +73,25 @@
       border-radius: 999px; margin: 16px 0 6px; box-shadow: 0 4px 12px rgba(0,0,0,.2)
     }
 
-    .item { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 16px; margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between; gap: 12px; box-shadow: 0 3px 12px rgba(122,63,23,.08); transition: transform .2s ease, box-shadow .2s ease }
+    .item { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 16px; margin-bottom: 14px; box-shadow: 0 3px 12px rgba(122,63,23,.08); transition: transform .2s ease, box-shadow .2s ease }
     .item:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(122,63,23,.16) }
-    .item .esq { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0 }
+    .item .topo { display: flex; align-items: center; gap: 12px }
     .item .thumb { width: 64px; height: 64px; border-radius: 14px; object-fit: cover; flex: none; border: 1px solid var(--line); cursor: pointer; background: var(--card) }
     .item .nome-wrap { flex: 1; min-width: 0 }
     .item .nome { font-family: 'Pacifico', cursive; font-size: 22px; color: var(--accent) }
     .item .desc { color: var(--muted); font-size: 13.5px; margin-top: 4px }
 
+    .tamanhos { display: flex; gap: 10px; margin-top: 12px }
+    .tam { flex: 1; background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 10px 12px; text-align: center }
+    .tam .tam-nome { font-weight: 700; font-size: 14px }
+    .tam .tam-preco { color: var(--accent); font-weight: 800; font-size: 16px; margin: 2px 0 8px }
+    .tam .q { display: flex; align-items: center; justify-content: center; gap: 8px }
+    .tam .q button { width: 32px; height: 32px; border-radius: 50%; border: 0; background: var(--line); color: var(--ink); font: 700 18px/1 inherit; cursor: pointer }
+    .tam .q button.add { background: var(--accent2); color: #fff }
+    .tam .q output { min-width: 16px; text-align: center; font-weight: 700 }
+
     .reveal { opacity: 0; transform: translateY(18px); transition: opacity .55s ease, transform .55s ease }
     .reveal.show { opacity: 1; transform: none }
-
-    .q { display: flex; align-items: center; gap: 8px; flex: none }
-    .q button { width: 36px; height: 36px; border-radius: 50%; border: 0; background: var(--line); color: var(--ink); font: 700 20px/1 inherit; cursor: pointer }
-    .q button.add { background: var(--accent2); color: #fff }
-    .q output { min-width: 18px; text-align: center; font-weight: 700 }
 
     .precos { background: linear-gradient(90deg, var(--accent), #5e2f10); color: #fff; border-radius: 18px; padding: 18px 20px; margin-top: 18px; text-align: center }
     .precos .linha { font-weight: 700; margin: 3px 0 }
@@ -165,8 +169,8 @@
     </section>
 
     <div class="precos">
-      <p class="linha">Pote 500g — <span class="valor">R$ 25,00</span></p>
-      <p class="linha">Acima de 4 potes — <span class="valor">R$ 20,00 cada</span></p>
+      <p class="linha">Pote 250g — <span class="valor">R$ 15,00</span></p>
+      <p class="linha">Pote 500g — <span class="valor">R$ 28,00</span></p>
       <p class="entrega">🛵 Entrega a partir de R$ 10,00 — consulte seu bairro</p>
     </div>
 
@@ -229,7 +233,12 @@
   <script src="menu.js"></script>
   <script>
     var WHATS = "5564993132591";
-    var PRECO = 25, PRECO_DESC = 20, MIN_DESC = 4;
+    var PRECO_250 = 15, PRECO_500 = 28;
+    var TAMANHOS = [
+      { id: "250g", label: "Pote 250g", preco: PRECO_250 },
+      { id: "500g", label: "Pote 500g", preco: PRECO_500 }
+    ];
+    // qty["Sabor||250g"] = quantidade
     var qty = {};
 
     document.getElementById("corp-btn").href =
@@ -257,31 +266,49 @@
       document.getElementById("lightbox").classList.add("aberto");
     }
 
+    function precoTam(tamId) {
+      for (var i = 0; i < TAMANHOS.length; i++) if (TAMANHOS[i].id === tamId) return TAMANHOS[i].preco;
+      return 0;
+    }
+
     function render(id, list) {
       var box = document.getElementById(id);
       if (!box || !list) return;
       list.forEach(function (it) {
         var n = it[0], sub = it[1] || "", img = it[2] || "";
         var card = document.createElement("div"); card.className = "item reveal";
-        var esq = document.createElement("div"); esq.className = "esq";
+        var topo = document.createElement("div"); topo.className = "topo";
         if (img) {
           var im = document.createElement("img"); im.className = "thumb"; im.src = img; im.alt = n; im.loading = "lazy";
           im.onclick = function () { abrirImagem(img); };
-          esq.appendChild(im);
+          topo.appendChild(im);
         }
         var wrap = document.createElement("div"); wrap.className = "nome-wrap";
         var s = document.createElement("div"); s.className = "nome"; s.textContent = n;
         wrap.appendChild(s);
         if (sub) { var sm = document.createElement("div"); sm.className = "desc"; sm.textContent = sub; wrap.appendChild(sm); }
-        esq.appendChild(wrap);
-        var q = document.createElement("div"); q.className = "q";
-        var minus = document.createElement("button"); minus.textContent = "−"; minus.hidden = true;
-        var out = document.createElement("output"); out.hidden = true;
-        var plus = document.createElement("button"); plus.textContent = "+"; plus.className = "add";
-        function upd() { var c = qty[n] || 0; minus.hidden = out.hidden = !c; out.textContent = c; sync(); }
-        plus.onclick = function () { qty[n] = (qty[n] || 0) + 1; upd(); };
-        minus.onclick = function () { qty[n] = Math.max(0, (qty[n] || 0) - 1); if (!qty[n]) delete qty[n]; upd(); };
-        q.append(minus, out, plus); card.append(esq, q); box.appendChild(card);
+        topo.appendChild(wrap);
+        card.appendChild(topo);
+
+        var tams = document.createElement("div"); tams.className = "tamanhos";
+        TAMANHOS.forEach(function (t) {
+          var key = n + "||" + t.id;
+          var tam = document.createElement("div"); tam.className = "tam";
+          var tn = document.createElement("div"); tn.className = "tam-nome"; tn.textContent = t.label;
+          var tp = document.createElement("div"); tp.className = "tam-preco"; tp.textContent = "R$ " + t.preco + ",00";
+          var q = document.createElement("div"); q.className = "q";
+          var minus = document.createElement("button"); minus.textContent = "−"; minus.hidden = true;
+          var out = document.createElement("output"); out.hidden = true;
+          var plus = document.createElement("button"); plus.textContent = "+"; plus.className = "add";
+          function upd() { var c = qty[key] || 0; minus.hidden = out.hidden = !c; out.textContent = c; sync(); }
+          plus.onclick = function () { qty[key] = (qty[key] || 0) + 1; upd(); };
+          minus.onclick = function () { qty[key] = Math.max(0, (qty[key] || 0) - 1); if (!qty[key]) delete qty[key]; upd(); };
+          q.append(minus, out, plus);
+          tam.append(tn, tp, q);
+          tams.appendChild(tam);
+        });
+        card.appendChild(tams);
+        box.appendChild(card);
       });
     }
     render("sabores", data.sabores);
@@ -299,8 +326,7 @@
     document.getElementById("lightbox").onclick = function (e) { if (e.target.id === "lightbox") this.classList.remove("aberto"); };
 
     function totalItens() { var t = 0; for (var k in qty) t += qty[k]; return t; }
-    function precoUnit() { return totalItens() > MIN_DESC ? PRECO_DESC : PRECO; }
-    function totalValor() { return totalItens() * precoUnit(); }
+    function totalValor() { var v = 0; for (var k in qty) { var tamId = k.split("||")[1]; v += qty[k] * precoTam(tamId); } return v; }
 
     function sync() {
       var t = totalItens();
@@ -308,6 +334,11 @@
       b.disabled = !t;
       b.textContent = t ? "Ver pedido (" + t + (t > 1 ? " potes" : " pote") + ")" : "Escolha seus potes";
       if (document.getElementById("drawer").classList.contains("aberto")) renderCarrinho();
+    }
+
+    function nomeTam(tamId) {
+      for (var i = 0; i < TAMANHOS.length; i++) if (TAMANHOS[i].id === tamId) return TAMANHOS[i].label;
+      return tamId;
     }
 
     function renderCarrinho() {
@@ -327,21 +358,22 @@
       }
       if (dados) dados.style.display = "";
       document.getElementById("finalizar").disabled = false;
-      keys.forEach(function (n) {
+      keys.forEach(function (key) {
+        var parts = key.split("||"); var sabor = parts[0], tamId = parts[1];
         var row = document.createElement("div"); row.className = "ci";
-        var nome = document.createElement("span"); nome.className = "nome"; nome.textContent = n;
+        var nome = document.createElement("span"); nome.className = "nome"; nome.textContent = sabor + " (" + nomeTam(tamId) + ")";
         var q = document.createElement("div"); q.className = "q";
         var minus = document.createElement("button"); minus.textContent = "−";
-        var out = document.createElement("output"); out.textContent = qty[n];
+        var out = document.createElement("output"); out.textContent = qty[key];
         var plus = document.createElement("button"); plus.textContent = "+"; plus.className = "add";
-        minus.onclick = function () { qty[n] = Math.max(0, qty[n] - 1); if (!qty[n]) delete qty[n]; sync(); };
-        plus.onclick = function () { qty[n] = (qty[n] || 0) + 1; sync(); };
+        minus.onclick = function () { qty[key] = Math.max(0, qty[key] - 1); if (!qty[key]) delete qty[key]; sync(); };
+        plus.onclick = function () { qty[key] = (qty[key] || 0) + 1; sync(); };
         q.append(minus, out, plus);
         row.append(nome, q);
         box.appendChild(row);
       });
       var t = totalItens();
-      totalEl.textContent = "Total: " + t + " pote" + (t > 1 ? "s" : "") + " × R$ " + precoUnit() + ",00 = R$ " + totalValor() + ",00";
+      totalEl.textContent = "Total: " + t + " pote" + (t > 1 ? "s" : "") + " = R$ " + totalValor() + ",00";
     }
 
     function abrirCarrinho() { renderCarrinho(); document.getElementById("overlay").classList.add("aberto"); document.getElementById("drawer").classList.add("aberto"); }
@@ -354,11 +386,16 @@
     function val(id) { var e = document.getElementById(id); return e && e.value ? e.value.trim() : ""; }
     document.getElementById("finalizar").onclick = function () {
       if (!totalItens()) return;
-      var lines = []; for (var k in qty) if (qty[k]) lines.push("• " + qty[k] + "x " + k);
+      var lines = [];
+      for (var k in qty) {
+        if (!qty[k]) continue;
+        var parts = k.split("||"); var sabor = parts[0], tamId = parts[1];
+        lines.push("• " + qty[k] + "x " + sabor + " (" + nomeTam(tamId) + ") — R$ " + (qty[k] * precoTam(tamId)) + ",00");
+      }
       var nome = val("c-nome"), tel = val("c-tel"), end = val("c-end"), obs = val("c-obs");
       var t = totalItens();
       var msg = "Olá! Gostaria de fazer um pedido na Doce Explosão 🍿:\n" + lines.join("\n");
-      msg += "\n\nTotal: " + t + " pote" + (t > 1 ? "s" : "") + " × R$ " + precoUnit() + ",00 = R$ " + totalValor() + ",00";
+      msg += "\n\nTotal: " + t + " pote" + (t > 1 ? "s" : "") + " = R$ " + totalValor() + ",00";
       if (nome) msg += "\nNome: " + nome;
       if (tel) msg += "\nTelefone: " + tel;
       if (end) msg += "\nEndereço: " + end;

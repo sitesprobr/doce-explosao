@@ -1,0 +1,9 @@
+var data = {
+  sabores: [
+    ["Explosão de Ninho", "Pipoca caramelizada e creme de ninho • Pote 500g • R$ 25,00"],
+    ["Explosão de Avelã", "Pipoca caramelizada e creme de avelã • Pote 500g • R$ 25,00"],
+    ["Dupla Explosão", "Pipoca caramelizada, meio creme de ninho e meio creme de avelã • Pote 500g • R$ 25,00"],
+    ["Explosão de Chocowaffer", "Pipoca caramelizada com creme de chocolate • Pote 500g • R$ 25,00"],
+    ["Explosão de Ninho Nuvem", "Pipoca caramelizada, creme de ninho e leite ninho em pó • Pote 500g • R$ 25,00"]
+  ]
+};

@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Doce Explosão – Pipoca Gourmet</title>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@500;600;700;800&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f3e3cf;
+      --card: #fff9f0;
+      --ink: #4a2e18;
+      --muted: #8a6a4e;
+      --accent: #7a3f17;
+      --accent2: #c9842f;
+      --gold: #e0a84e;
+      --line: #e6cfb2;
+      --onaccent: #fff;
+      color-scheme: light;
+    }
+
+    * { box-sizing: border-box }
+
+    body {
+      margin: 0;
+      background: radial-gradient(120% 60% at 50% 0%, #e9c99b 0%, #f3e3cf 55%);
+      background-attachment: fixed;
+      color: var(--ink);
+      font-family: 'Quicksand', system-ui, sans-serif;
+      font-weight: 500;
+      line-height: 1.5;
+      padding-bottom: 96px;
+    }
+
+    main { max-width: 620px; margin: 0 auto; padding: 0 18px }
+
+    header { text-align: center; padding: 26px 0 10px }
+    .logo { width: 150px; height: 150px; object-fit: cover; border-radius: 50%; margin: 0 auto 8px; display: block; border: 4px solid var(--accent); box-shadow: 0 6px 18px rgba(0,0,0,.18) }
+    h1 {
+      font-family: 'Pacifico', cursive; font-weight: 400; font-size: 40px; margin: 6px 0 0;
+      color: var(--accent); text-shadow: 1px 1px 0 var(--gold)
+    }
+    .tag { color: var(--muted); margin: 4px 0 0; font-weight: 700 }
+
+    .cardapio-sel {
+      display: inline-block; font-family: 'Pacifico', cursive; font-size: 26px; color: #fff;
+      background: linear-gradient(90deg, var(--accent), var(--accent2)); padding: 6px 30px;
+      border-radius: 999px; margin: 16px 0 6px; box-shadow: 0 4px 12px rgba(0,0,0,.2)
+    }
+
+    .item { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 16px; margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between; gap: 12px; box-shadow: 0 3px 12px rgba(122,63,23,.08) }
+    .item .nome-wrap { flex: 1; min-width: 0 }
+    .item .nome { font-family: 'Pacifico', cursive; font-size: 22px; color: var(--accent) }
+    .item .desc { color: var(--muted); font-size: 13.5px; margin-top: 4px }
+
+    .q { display: flex; align-items: center; gap: 8px; flex: none }
+    .q button { width: 36px; height: 36px; border-radius: 50%; border: 0; background: var(--line); color: var(--ink); font: 700 20px/1 inherit; cursor: pointer }
+    .q button.add { background: var(--accent2); color: #fff }
+    .q output { min-width: 18px; text-align: center; font-weight: 700 }
+
+    .precos { background: linear-gradient(90deg, var(--accent), #5e2f10); color: #fff; border-radius: 18px; padding: 18px 20px; margin-top: 18px; text-align: center }
+    .precos .linha { font-weight: 700; margin: 3px 0 }
+    .precos .valor { color: var(--gold) }
+    .precos .entrega { font-size: 13px; color: #f3dcbb; margin-top: 8px }
+
+    .info { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 20px; margin-top: 16px; text-align: center }
+    .info p { margin: 4px 0 }
+    .info a { color: var(--accent); font-weight: 700 }
+
+    .bar { position: fixed; left: 0; right: 0; bottom: 0; padding: 12px 18px calc(12px + env(safe-area-inset-bottom, 0px)); background: var(--bg); border-top: 1px solid var(--line); display: flex; justify-content: center; z-index: 10 }
+    .bar button { width: 100%; max-width: 584px; border: 0; border-radius: 999px; background: var(--accent); color: #fff; font: 700 17px inherit; padding: 14px; cursor: pointer }
+    .bar button:disabled { opacity: .5; cursor: default }
+
+    .overlay { position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 20; opacity: 0; pointer-events: none; transition: opacity .25s }
+    .overlay.aberto { opacity: 1; pointer-events: auto }
+
+    .drawer { position: fixed; left: 0; right: 0; bottom: 0; z-index: 21; background: var(--bg); border-radius: 22px 22px 0 0; max-width: 620px; margin: 0 auto; max-height: 85vh; display: flex; flex-direction: column; transform: translateY(100%); transition: transform .28s ease; box-shadow: 0 -8px 30px rgba(0,0,0,.3) }
+    .drawer.aberto { transform: translateY(0) }
+    .drawer-topo { display: flex; align-items: center; justify-content: space-between; padding: 18px 20px 10px }
+    .drawer-topo h3 { font-family: 'Pacifico', cursive; font-weight: 400; font-size: 24px; margin: 0; color: var(--accent) }
+    .drawer-fechar { width: 36px; height: 36px; border: 0; border-radius: 50%; background: var(--line); color: var(--ink); font: 700 18px/1 inherit; cursor: pointer }
+    .drawer-itens { overflow-y: auto; padding: 4px 20px; flex: 1 }
+    .drawer-itens .vazio { color: var(--muted); text-align: center; padding: 30px 0 }
+    .drawer-total { padding: 6px 20px; font-weight: 700; color: var(--accent); text-align: right }
+    .ci { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line) }
+    .ci .nome { flex: 1 }
+    .drawer-dados { padding: 6px 20px 2px }
+    .drawer-dados label { display: block; font-weight: 700; font-size: 13px; margin: 10px 0 4px }
+    .drawer-dados input { width: 100%; border: 1px solid var(--line); border-radius: 12px; background: var(--card); color: var(--ink); font: 500 15px inherit; padding: 11px }
+    .drawer-rodape { padding: 14px 20px calc(16px + env(safe-area-inset-bottom, 0px)); border-top: 1px solid var(--line) }
+    .drawer-rodape .btn { width: 100%; border: 0; border-radius: 999px; background: #25d366; color: #fff; font: 700 17px inherit; padding: 14px; cursor: pointer }
+  </style>
+</head>
+
+<body>
+  <main>
+    <header>
+      <!-- Se tiver a logo, suba o arquivo e descomente:
+      <img class="logo" src="logo.png" alt="Doce Explosão"> -->
+      <h1>Doce Explosão</h1>
+      <p class="tag">🍿 Pipoca Gourmet • Sabor que explode!</p>
+      <div class="cardapio-sel">Cardápio</div>
+    </header>
+
+    <section>
+      <div id="sabores"></div>
+    </section>
+
+    <div class="precos">
+      <p class="linha">Pote 500g — <span class="valor">R$ 25,00</span></p>
+      <p class="linha">Acima de 4 potes — <span class="valor">R$ 20,00 cada</span></p>
+      <p class="entrega">🛵 Entrega a partir de R$ 10,00 — consulte seu bairro</p>
+    </div>
+
+    <div class="info">
+      <p>📲 Monte seu pedido e peça pelo WhatsApp!</p>
+      <p>Instagram: <a href="https://instagram.com/doceexplosao" target="_blank" rel="noopener">@doceexplosao</a></p>
+      <p>WhatsApp: (64) 99313-2591</p>
+    </div>
+  </main>
+
+  <div class="bar"><button id="send" disabled>Escolha seus potes</button></div>
+
+  <div class="overlay" id="overlay"></div>
+  <aside class="drawer" id="drawer" aria-label="Resumo do pedido">
+    <div class="drawer-topo">
+      <h3>Seu pedido 🍿</h3>
+      <button class="drawer-fechar" id="fechar" aria-label="Fechar">✕</button>
+    </div>
+    <div class="drawer-itens" id="carrinho-itens"></div>
+    <div class="drawer-total" id="drawer-total"></div>
+    <div class="drawer-dados">
+      <label for="c-nome">Seu nome</label>
+      <input id="c-nome" type="text" placeholder="Nome completo">
+      <label for="c-tel">Telefone / WhatsApp</label>
+      <input id="c-tel" type="tel" placeholder="(64) 90000-0000">
+      <label for="c-end">Endereço de entrega</label>
+      <input id="c-end" type="text" placeholder="Rua, número, bairro, referência">
+      <label for="c-obs">Observações (opcional)</label>
+      <input id="c-obs" type="text" placeholder="Ex: forma de pagamento, ponto de referência...">
+    </div>
+    <div class="drawer-rodape">
+      <button class="btn" id="finalizar">Enviar pedido no WhatsApp</button>
+    </div>
+  </aside>
+
+  <script src="menu.js"></script>
+  <script>
+    var WHATS = "5564993132591";
+    var PRECO = 25, PRECO_DESC = 20, MIN_DESC = 4;
+    var qty = {};
+
+    function render(id, list) {
+      var box = document.getElementById(id);
+      if (!box || !list) return;
+      list.forEach(function (it) {
+        var n = it[0], sub = it[1] || "";
+        var card = document.createElement("div"); card.className = "item";
+        var wrap = document.createElement("div"); wrap.className = "nome-wrap";
+        var s = document.createElement("div"); s.className = "nome"; s.textContent = n;
+        wrap.appendChild(s);
+        if (sub) { var sm = document.createElement("div"); sm.className = "desc"; sm.textContent = sub; wrap.appendChild(sm); }
+        var q = document.createElement("div"); q.className = "q";
+        var minus = document.createElement("button"); minus.textContent = "−"; minus.hidden = true;
+        var out = document.createElement("output"); out.hidden = true;
+        var plus = document.createElement("button"); plus.textContent = "+"; plus.className = "add";
+        function upd() { var c = qty[n] || 0; minus.hidden = out.hidden = !c; out.textContent = c; sync(); }
+        plus.onclick = function () { qty[n] = (qty[n] || 0) + 1; upd(); };
+        minus.onclick = function () { qty[n] = Math.max(0, (qty[n] || 0) - 1); if (!qty[n]) delete qty[n]; upd(); };
+        q.append(minus, out, plus); card.append(wrap, q); box.appendChild(card);
+      });
+    }
+    render("sabores", data.sabores);
+
+    function totalItens() { var t = 0; for (var k in qty) t += qty[k]; return t; }
+    function precoUnit() { return totalItens() > MIN_DESC ? PRECO_DESC : PRECO; }
+    function totalValor() { return totalItens() * precoUnit(); }
+
+    function sync() {
+      var t = totalItens();
+      var b = document.getElementById("send");
+      b.disabled = !t;
+      b.textContent = t ? "Ver pedido (" + t + (t > 1 ? " potes" : " pote") + ")" : "Escolha seus potes";
+      if (document.getElementById("drawer").classList.contains("aberto")) renderCarrinho();
+    }
+
+    function renderCarrinho() {
+      var box = document.getElementById("carrinho-itens");
+      box.innerHTML = "";
+      var keys = []; for (var k in qty) if (qty[k]) keys.push(k);
+      var dados = document.querySelector(".drawer-dados");
+      var totalEl = document.getElementById("drawer-total");
+      if (!keys.length) {
+        var v = document.createElement("p"); v.className = "vazio";
+        v.textContent = "Seu pedido está vazio.";
+        box.appendChild(v);
+        document.getElementById("finalizar").disabled = true;
+        totalEl.textContent = "";
+        if (dados) dados.style.display = "none";
+        return;
+      }
+      if (dados) dados.style.display = "";
+      document.getElementById("finalizar").disabled = false;
+      keys.forEach(function (n) {
+        var row = document.createElement("div"); row.className = "ci";
+        var nome = document.createElement("span"); nome.className = "nome"; nome.textContent = n;
+        var q = document.createElement("div"); q.className = "q";
+        var minus = document.createElement("button"); minus.textContent = "−";
+        var out = document.createElement("output"); out.textContent = qty[n];
+        var plus = document.createElement("button"); plus.textContent = "+"; plus.className = "add";
+        minus.onclick = function () { qty[n] = Math.max(0, qty[n] - 1); if (!qty[n]) delete qty[n]; sync(); };
+        plus.onclick = function () { qty[n] = (qty[n] || 0) + 1; sync(); };
+        q.append(minus, out, plus);
+        row.append(nome, q);
+        box.appendChild(row);
+      });
+      var t = totalItens();
+      totalEl.textContent = "Total: " + t + " pote" + (t > 1 ? "s" : "") + " × R$ " + precoUnit() + ",00 = R$ " + totalValor() + ",00";
+    }
+
+    function abrirCarrinho() { renderCarrinho(); document.getElementById("overlay").classList.add("aberto"); document.getElementById("drawer").classList.add("aberto"); }
+    function fecharCarrinho() { document.getElementById("overlay").classList.remove("aberto"); document.getElementById("drawer").classList.remove("aberto"); }
+
+    document.getElementById("send").onclick = abrirCarrinho;
+    document.getElementById("fechar").onclick = fecharCarrinho;
+    document.getElementById("overlay").onclick = fecharCarrinho;
+
+    function val(id) { var e = document.getElementById(id); return e && e.value ? e.value.trim() : ""; }
+    document.getElementById("finalizar").onclick = function () {
+      if (!totalItens()) return;
+      var lines = []; for (var k in qty) if (qty[k]) lines.push("• " + qty[k] + "x " + k);
+      var nome = val("c-nome"), tel = val("c-tel"), end = val("c-end"), obs = val("c-obs");
+      var t = totalItens();
+      var msg = "Olá! Gostaria de fazer um pedido na Doce Explosão 🍿:\n" + lines.join("\n");
+      msg += "\n\nTotal: " + t + " pote" + (t > 1 ? "s" : "") + " × R$ " + precoUnit() + ",00 = R$ " + totalValor() + ",00";
+      if (nome) msg += "\nNome: " + nome;
+      if (tel) msg += "\nTelefone: " + tel;
+      if (end) msg += "\nEndereço: " + end;
+      if (obs) msg += "\nObservações: " + obs;
+      window.open("https://wa.me/" + WHATS + "?text=" + encodeURIComponent(msg), "_blank");
+    };
+  </script>
+</body>
+
+</html>

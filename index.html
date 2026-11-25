@@ -103,6 +103,14 @@
     .corp .kit .kp { color: var(--accent); font-weight: 800; font-size: 18px }
     .corp .corp-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%; border: 0; border-radius: 999px; background: #25d366; color: #fff; font: 700 16px inherit; padding: 13px; cursor: pointer; text-decoration: none }
 
+    .amor { background: linear-gradient(160deg, #fff0f3, #ffe3ea); border: 2px solid #e58aa6; border-radius: 18px; padding: 22px 20px; margin-top: 18px; text-align: center }
+    .amor .amor-tit { font-family: 'Pacifico', cursive; font-size: 28px; color: #c43b63; margin: 0 }
+    .amor .amor-foto { width: 100%; max-width: 320px; aspect-ratio: 4/3; object-fit: cover; border-radius: 16px; margin: 12px auto 0; display: block; border: 2px solid #f0b9cb; cursor: pointer }
+    .amor .amor-emoji { font-size: 48px; margin: 8px 0 4px }
+    .amor .amor-desc { color: #8a4257; font-weight: 600; margin: 8px 0 2px }
+    .amor .amor-preco { color: #c43b63; font-weight: 800; font-size: 26px; margin: 6px 0 14px }
+    .amor .amor-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%; border: 0; border-radius: 999px; background: #e0416e; color: #fff; font: 700 16px inherit; padding: 13px; cursor: pointer; text-decoration: none }
+
     .info { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 20px; margin-top: 16px; text-align: center }
     .info p { margin: 4px 0 }
     .info a { color: var(--accent); font-weight: 700 }
@@ -163,6 +171,14 @@
       <p class="entrega">🛵 Entrega a partir de R$ 10,00 — consulte seu bairro</p>
     </div>
 
+    <div class="amor">
+      <p class="amor-tit">💕 Explosão do Amor</p>
+      <div class="amor-emoji">🍿💐</div>
+      <p class="amor-desc">Pipoca gourmet + um lindo buquê</p>
+      <p class="amor-preco">R$ 179,90</p>
+      <a class="amor-btn" id="amor-btn" href="#" target="_blank" rel="noopener">💌 Pedir Explosão do Amor</a>
+    </div>
+
     <div class="corp">
       <p class="corp-tit">🏢 Kit Corporativo</p>
       <p class="corp-sub">Pipocas gourmet para a sua empresa!</p>
@@ -219,6 +235,8 @@
 
     document.getElementById("corp-btn").href =
       "https://wa.me/" + WHATS + "?text=" + encodeURIComponent("Olá! Tenho interesse no Kit Corporativo da Doce Explosão 🍿🏢.\n\nKits:\n• 25 unidades — R$ 375,00\n• 50 unidades — R$ 750,00\n• 100 unidades — R$ 1.200,00\n\nGostaria de mais informações!");
+    document.getElementById("amor-btn").href =
+      "https://wa.me/" + WHATS + "?text=" + encodeURIComponent("Olá! Tenho interesse na Explosão do Amor 💕🍿💐 (pipoca gourmet + buquê) — R$ 179,90. Gostaria de mais informações!");
 
     (function () {
       var box = document.getElementById("pipocas");

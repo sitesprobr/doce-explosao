@@ -129,6 +129,7 @@
     .info { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 20px; margin-top: 16px; text-align: center }
     .info p { margin: 4px 0 }
     .info a { color: var(--accent); font-weight: 700 }
+    .info .zap { display: inline-flex; align-items: center; gap: 6px; margin-top: 10px; background: #25d366; color: #fff; text-decoration: none; font-weight: 700; padding: 10px 18px; border-radius: 999px }
 
     .bar { position: fixed; left: 0; right: 0; bottom: 0; padding: 12px 18px calc(12px + env(safe-area-inset-bottom, 0px)); background: var(--bg); border-top: 1px solid var(--line); display: flex; justify-content: center; z-index: 10 }
     .bar button { width: 100%; max-width: 584px; border: 0; border-radius: 999px; background: var(--accent); color: #fff; font: 700 17px inherit; padding: 14px; cursor: pointer }
@@ -219,7 +220,7 @@
     <div class="info">
       <p>📲 Monte seu pedido e peça pelo WhatsApp!</p>
       <p>Instagram: <a href="https://instagram.com/doceexplosaopipocasgourmet" target="_blank" rel="noopener">@doceexplosaopipocasgourmet</a></p>
-      <p>WhatsApp: (64) 99313-2501</p>
+      <a class="zap" id="zap-link" href="#" target="_blank" rel="noopener">💬 WhatsApp: (64) 99313-2501</a>
     </div>
   </main>
 
@@ -270,6 +271,8 @@
       "https://wa.me/" + WHATS + "?text=" + encodeURIComponent("Olá! Tenho interesse no Kit Corporativo da Doce Explosão 🍿🏢 (potes de 250g).\n\nKits:\n• 25 unidades — R$ 375,00\n• 50 unidades — R$ 750,00\n• 100 unidades — R$ 1.200,00\n\nGostaria de mais informações!");
     document.getElementById("amor-btn").href =
       "https://wa.me/" + WHATS + "?text=" + encodeURIComponent("Olá! Tenho interesse na Explosão do Amor 💕🍿💐 (pipoca gourmet + buquê) — R$ 179,90. Gostaria de mais informações!");
+    document.getElementById("zap-link").href =
+      "https://wa.me/" + WHATS + "?text=" + encodeURIComponent("Olá! Vim pelo cardápio da Doce Explosão 🍿 e gostaria de fazer um pedido.");
 
     (function () {
       var btn = document.getElementById("pix-copiar");
